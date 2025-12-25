@@ -1,30 +1,30 @@
 let donations = []
 
 export default function handler(req, res) {
+  // webhook dari Sociabuzz
   if (req.method === "POST") {
     const body = req.body
 
     donations.push({
-      nama: body.nama || "Anonymous",
-      amount: Number(body.amount) || 0,
+      nama: body.supporter_name || "Anonim",
+      amount: Number(body.amount || 0),
       message: body.message || "",
-      email: body.email || "",
-      id: Date.now(),
       timestamp: Date.now()
     })
 
-    return res.status(200).json({ success: true })
+    return res.status(200).json({ ok: true })
   }
 
+  // diambil Roblox
   if (req.method === "GET") {
-    const result = [...donations]
-    donations = [] // kosongkan setelah diambil Roblox
+    const data = [...donations]
+    donations = [] // HAPUS setelah diambil (anti dobel)
 
     return res.status(200).json({
       success: true,
-      donations: result
+      donations: data
     })
   }
 
-  res.status(405).json({ error: "Method not allowed" })
+  res.status(405).end()
 }
